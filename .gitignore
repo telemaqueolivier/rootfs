@@ -1,0 +1,8 @@
+rootfs.img
+resources/busybox-1.22.1
+resources/busybox-1.22.1.tar.bz2
+resources/crosstool-ng-1.19.0
+resources/crosstool-ng-1.19.0.tar.bz2
+resources/linux-3.14.5
+resources/linux-3.14.5.tar.xz
+.stamp_populate_rootfs
