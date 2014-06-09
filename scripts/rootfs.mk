@@ -24,6 +24,9 @@ help:
 	@echo "\tdescription : Launch rootfs and kernel inside qemu, make the entire creation process if rootfs and kernel don't exist"
 	@echo "\n\targument : it takes no arguments"
 
+prerequs :
+	sudo apt-get install qemu-systeme-x86
+
 download : resources/linux-$(LINUX_KERNEL_VERSION).tar.xz resources/busybox-$(BUSYBOX_VERSION).tar.bz2 resources/crosstool-ng-$(CT_NG_VERSION).tar.bz2
 resources/linux-$(LINUX_KERNEL_VERSION).tar.xz :
 	wget -P resources ftp://ftp.kernel.org/pub/linux/kernel/v3.x/linux-$(LINUX_KERNEL_VERSION).tar.xz
@@ -33,11 +36,11 @@ resources/crosstool-ng-$(CT_NG_VERSION).tar.bz2 :
 	wget -P resources http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-$(CT_NG_VERSION).tar.bz2
 
 
-resources/linux-$(LINUX_KERNEL_VERSION) :
+resources/linux-$(LINUX_KERNEL_VERSION) : resources/linux-$(LINUX_KERNEL_VERSION).tar.xz
 	tar --directory=resources -xJf resources/linux-$(LINUX_KERNEL_VERSION).tar.xz
-resources/busybox-$(BUSYBOX_VERSION) :
+resources/busybox-$(BUSYBOX_VERSION) : resources/busybox-$(BUSYBOX_VERSION).tar.bz2
 	tar --directory=resources -xjf resources/busybox-$(BUSYBOX_VERSION).tar.bz2
-resources/crosstool-ng-$(CT_NG_VERSION) :
+resources/crosstool-ng-$(CT_NG_VERSION) : resources/crosstool-ng-$(CT_NG_VERSION).tar.bz2
 	tar --directory=resources -xjf resources/crosstool-ng-$(CT_NG_VERSION).tar.bz2
 
 
