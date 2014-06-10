@@ -29,7 +29,7 @@ prerequs :
 
 download : resources/linux-$(LINUX_KERNEL_VERSION).tar.xz resources/busybox-$(BUSYBOX_VERSION).tar.bz2 resources/crosstool-ng-$(CT_NG_VERSION).tar.bz2
 resources/linux-$(LINUX_KERNEL_VERSION).tar.xz :
-	wget -P resources ftp://ftp.kernel.org/pub/linux/kernel/v3.x/linux-$(LINUX_KERNEL_VERSION).tar.xz
+	wget -P resources http://ftp.free.fr/mirrors/ftp.kernel.org/linux/kernel/v3.x/linux-$(LINUX_KERNEL_VERSION).tar.xz
 resources/busybox-$(BUSYBOX_VERSION).tar.bz2 :
 	wget -P resources http://www.busybox.net/downloads/busybox-$(BUSYBOX_VERSION).tar.bz2
 resources/crosstool-ng-$(CT_NG_VERSION).tar.bz2 :
@@ -44,9 +44,10 @@ resources/crosstool-ng-$(CT_NG_VERSION) : resources/crosstool-ng-$(CT_NG_VERSION
 	tar --directory=resources -xjf resources/crosstool-ng-$(CT_NG_VERSION).tar.bz2
 
 
-make_kernel : resources/linux-$(LINUX_KERNEL_VERSION) resources/linux-$(LINUX_KERNEL_VERSION)/arch/x86_64/boot/bzImage
+make_kernel : resources/linux-$(LINUX_KERNEL_VERSION)/arch/x86_64/boot/bzImage
+resources/linux-$(LINUX_KERNEL_VERSION)/arch/x86_64/boot/bzImage : resources/linux-$(LINUX_KERNEL_VERSION)
 	make -C resources/linux-$(LINUX_KERNEL_VERSION) x86_64_defconfig
-	make -C resources/linux-$(LINUX_KERNEL_VERSION)
+	make -C resources/linux-$(LINUX_KERNEL_VERSION) -j3
 
 build_compilation_env :
 	@echo "don't forget to build manually your compilation env to have a proper libc (compiled against the proper kernel header) to build a proper busybox"
@@ -82,7 +83,7 @@ populate_rootfs : .stamp_populate_rootfs
 	touch $@
 
 launch : populate_rootfs make_kernel
-	qemu-system-x86_64 -hda rootfs.img -kernel resources/linux-$(LINUX_KERNEL_VERSION)/arch/x86/boot/bzImage -append "root=/dev/sda rw console=ttyS0" -nographic
+	qemu-system-x86_64 -hda rootfs.img -kernel resources/linux-$(LINUX_KERNEL_VERSION)/arch/x86/boot/bzImage -append "root=/dev/sda rw rootfstype=ext4 console=ttyS0" -nographic
 
 V=something
 ifdef V1
