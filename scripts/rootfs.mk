@@ -29,7 +29,7 @@ prerequs :
 
 download : resources/linux-$(LINUX_KERNEL_VERSION).tar.xz resources/busybox-$(BUSYBOX_VERSION).tar.bz2 resources/crosstool-ng-$(CT_NG_VERSION).tar.bz2
 resources/linux-$(LINUX_KERNEL_VERSION).tar.xz :
-	wget -P resources http://ftp.free.fr/mirrors/ftp.kernel.org/linux/kernel/v3.x/linux-$(LINUX_KERNEL_VERSION).tar.xz
+	wget -P resources https://www.kernel.org/pub/linux/kernel/v3.x/linux-$(LINUX_KERNEL_VERSION).tar.xz
 resources/busybox-$(BUSYBOX_VERSION).tar.bz2 :
 	wget -P resources http://www.busybox.net/downloads/busybox-$(BUSYBOX_VERSION).tar.bz2
 resources/crosstool-ng-$(CT_NG_VERSION).tar.bz2 :
@@ -66,13 +66,13 @@ resources/busybox-$(BUSYBOX_VERSION)/_install/bin/busybox : resources/busybox-$(
 #	DEFAULT_COUNT=$(COUNT)
 #endif
 
-$(DEFAULT_OF) :
+.stamp_$(DEFAULT_OF) :
 	dd if=/dev/zero of=$(DEFAULT_OF) count=$(DEFAULT_COUNT)
 	sudo mkfs -t ext4 -i 1024 -F $(DEFAULT_OF)
-
+	touch $@
 
 populate_rootfs : .stamp_populate_rootfs
-.stamp_populate_rootfs : resources/busybox-$(BUSYBOX_VERSION)/_install/bin/busybox $(DEFAULT_OF)
+.stamp_populate_rootfs : resources/busybox-$(BUSYBOX_VERSION)/_install/bin/busybox .stamp_$(DEFAULT_OF)
 	sudo mount -o loop $(DEFAULT_OF) /mnt
 	sudo rsync -a resources/busybox-$(BUSYBOX_VERSION)/_install/ /mnt
 	sudo chown -R root:root /mnt
