@@ -77,6 +77,7 @@ populate_rootfs : .stamp_populate_rootfs
 	sudo rsync -a resources/busybox-$(BUSYBOX_VERSION)/_install/ /mnt
 	sudo chown -R root:root /mnt
 	sudo cp -rf overlay_fs/* /mnt
+	sudo mkdir -p /mnt/lib/modules/$(LINUX_KERNEL_VERSION)
 	sudo chmod -R 777 /mnt/*
 	sync
 	sudo umount /mnt
